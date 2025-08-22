@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Livestream Clips Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        .clip { margin-bottom: 30px; }
+        video { width: 480px; height: 270px; display: block; margin-top: 5px; }
+        .transcript { background: #f4f4f4; padding: 10px; border-radius: 5px; margin-top: 5px; }
+        .message { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Livestream Clips Dashboard</h1>
+
+    <!-- Run Pipeline Button -->
+    <form method="post" style="margin-bottom: 20px;">
+        {% csrf_token %}
+        <button type="submit">Run Pipeline</button>
+    </form>
+
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <p class="message" style="color: {% if message.tags == 'success' %}green{% else %}red{% endif %};">
+                {{ message }}
+            </p>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Clips Display -->
+    {% if clips %}
+        {% for clip in clips %}
+        <div class="clip">
+            <h3>Keyword: {{ clip.keyword.word }}</h3>
+            <video controls>
+                <source src="{{ clip.file_path|url }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="transcript">
+                <strong>Transcript:</strong>
+                <p>{{ clip.transcript.text }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No clips available yet.</p>
+    {% endif %}
+
+</body>
+</html>
